@@ -3,7 +3,6 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:provider/provider.dart';
 
 typedef PageBuilder = Page Function(Uri uri);
@@ -156,7 +155,6 @@ class RouteManager extends ChangeNotifier {
   }
   
   /// go multiple [Uri] at once
-  @experimental
   Future<void> multipleGo(List<Uri> uris) async {
     for (final uri in uris) {
       await go(uri);
@@ -206,7 +204,7 @@ class RouteManager extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   // web会有问题
   // void insertGo(Uri uri) {
   //   for (var i = 0; i < routes.keys.length; i++) {

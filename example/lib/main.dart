@@ -2,16 +2,17 @@ import 'package:navigator_manager/navigator_manager.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(BooksApp());
+  runApp(MyApp());
 }
 
-class BooksApp extends StatefulWidget {
+class MyApp extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _BooksAppState();
+  State<StatefulWidget> createState() => _MyAppState();
 }
 
-class _BooksAppState extends State<BooksApp> {
+class _MyAppState extends State<MyApp> {
   final _routerDelegate = LRouterDelegate(
+    // 配置web用的路由没有匹配的页面 app正常情况下无需
     pageNotFound: (uri) => MaterialPage(
       key: ValueKey('not-found-page'),
       child: Builder(
@@ -22,6 +23,7 @@ class _BooksAppState extends State<BooksApp> {
         ),
       ),
     ),
+    // 配置路由信息
     routes: {
       '/': (_) => HomePage(),
       '/test/todo': (uri) =>
@@ -69,6 +71,7 @@ class Home extends StatelessWidget {
             Text('Home'),
             TextButton(
               onPressed: () {
+                // 跳转
                 RouteManager.of(context).go(
                     Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
               },
@@ -76,27 +79,29 @@ class Home extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
+                // 跳转
                 RouteManager.of(context).go(Uri(path: '/test/12345'));
               },
               child: Text('Test 12345'),
             ),
             TextButton(
               onPressed: () {
+                // 清除路由栈并跳转
                 RouteManager.of(context).clearAndGo(Uri(path: '/test/todo'));
               },
               child: Text('Test replace'),
             ),
             TextButton(
               onPressed: () {
+                // 清除路由栈并跳转（设置多个路由）
                 RouteManager.of(context).clearAndMultipleGo([Uri(path: '/test/todo', queryParameters: {'limit': '12'}), Uri(path: '/test/todo')]);
               },
               child: Text('clearAndMultipleGo'),
             ),
             TextButton(
               onPressed: () async{
-                print(33333);
+                // 等待结果跳转 配合returnResultGo使用
                 final result = await RouteManager.of(context).waitResultGo(Uri(path: '/result'));
-                print(22222);
                 print(result);
               },
               child: Text('waitResultGo'),
@@ -162,6 +167,7 @@ class Test extends StatelessWidget {
             Text('limit = $limit'),
             TextButton(
               onPressed: () {
+                // 返回
                 RouteManager.of(context).goBack(context);
               },
               child: Text('Back'),
@@ -206,6 +212,7 @@ class Result extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             TextButton(
+              // 返回结果
               onPressed: () => RouteManager.of(context).returnResultGo({'uid': 1}),
               child: Text('Result with true via custom method'),
             ),

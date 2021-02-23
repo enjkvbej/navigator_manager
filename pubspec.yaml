@@ -1,7 +1,6 @@
 name: navigator_manager
 description: Navigator 2.0 for app and web.
 version: 0.0.1
-author: enjkvbej
 homepage: https://github.com/enjkvbej/navigator_manager
 
 environment:

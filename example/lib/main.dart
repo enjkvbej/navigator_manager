@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     ),
-    // 配置路由信息
+    // 配置所有路由信息
     routes: {
       '/': (_) => HomePage(),
       '/test/todo': (uri) =>

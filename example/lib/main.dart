@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
       ),
     ),
     // 配置所有路由信息
+    initialUris: [Uri(path: '/'), Uri(path: '/test/todo')],
     routes: {
       '/': (_) => HomePage(),
       '/test/todo': (uri) =>

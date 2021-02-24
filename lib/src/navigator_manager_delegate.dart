@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-typedef PageBuilder = Page Function(Uri uri);
+typedef PageBuilder = Page Function(dynamic params);
 
 /// a [RouterDelegate] based on [Uri]
 class LRouterDelegate extends RouterDelegate<Uri>
@@ -26,6 +26,8 @@ class LRouterDelegate extends RouterDelegate<Uri>
     routeManager.addListener(notifyListeners);
 
     for (final uri in initialUris ?? [Uri(path: '/')]) {
+      print(444);
+      print(initialUris);
       routeManager.go(uri);
     }
   }
@@ -39,6 +41,7 @@ class LRouterDelegate extends RouterDelegate<Uri>
   /// add a new [Uri] and the corresponding [Page] on top of the navigator
   @override
   Future<void> setNewRoutePath(Uri uri) {
+    
     return routeManager.go(uri);
   }
 
@@ -93,10 +96,13 @@ class RouteManager extends ChangeNotifier {
   List<Uri> get uris => UnmodifiableListView(_uris);
   Completer<dynamic> _boolResultCompleter;
 
-  Future<void> _setNewRoutePath(Uri uri) {
+  Future<void> _setNewRoutePath(Uri uri, dynamic params) {
+  print(uri);
     bool _findRoute = false;
     for (var i = 0; i < routes.keys.length; i++) {
+     
       final key = routes.keys.elementAt(i);
+      
       if (key == uri.path) {
         if (_uris.contains(uri)) {
           final position = _uris.indexOf(uri);
@@ -108,9 +114,11 @@ class RouteManager extends ChangeNotifier {
           _findRoute = true;
           break;
         }
-        _pages.add(routes[key](uri));
+        
+        _pages.add(routes[key](params ?? uri));
         _uris.add(uri);
         _findRoute = true;
+         print(_pages);
         break;
       }
     }
@@ -137,7 +145,7 @@ class RouteManager extends ChangeNotifier {
   }
 
   /// goto an [Uri]
-  Future<void> go(Uri uri) => _setNewRoutePath(uri);
+  Future<void> go(Uri uri, {dynamic params}) => _setNewRoutePath(uri, params);
   
   void goBack(BuildContext context) {
     if (_pages.length > 1) {

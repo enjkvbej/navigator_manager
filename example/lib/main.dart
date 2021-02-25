@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _routerDelegate = LRouterDelegate(
     // 配置web用的路由没有匹配的页面 app正常情况下无需
-    pageNotFound: (uri) => MaterialPage(
+    pageNotFound: (uri, params) => MaterialPage(
       key: ValueKey('not-found-page'),
       child: Builder(
         builder: (context) => Scaffold(
@@ -24,12 +24,12 @@ class _MyAppState extends State<MyApp> {
       ),
     ),
     // 配置所有路由信息
-    initialUris: [Uri(path: '/'), Uri(path: '/test/todo')],
     routes: {
-      '/': (_) => HomePage(),
-      '/test/todo': (uri) =>
+      '/': (_, __) => HomePage(),
+      '/test/todo': (uri, _) =>
           TestPage(uri),
-      '/result': (_) => ResultPage(),
+      '/result': (_, __) => ResultPage(),
+      '/login': (_, params) => LoginPage(params),
     },
   );
 
@@ -64,38 +64,38 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Home Page'),
         automaticallyImplyLeading: true,
       ),
       body: Center(
         child: Column(
           children: [
-            Text('Home'),
             TextButton(
               onPressed: () {
                 // 跳转
                 RouteManager.of(context).go(
-                    Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
+                    Uri(path: '/test/todo', queryParameters: {'text': '12'}));
               },
-              child: Text('Test toto'),
+              child: Text('Test go'),
             ),
             TextButton(
               onPressed: () {
-                // 跳转
-                RouteManager.of(context).go(Uri(path: '/test/12345'));
+                // 跳转无匹配路由
+                RouteManager.of(context).go(Uri(path: '/test/haha'));
               },
-              child: Text('Test 12345'),
+              child: Text('Test not found'),
             ),
             TextButton(
               onPressed: () {
                 // 清除路由栈并跳转
-                RouteManager.of(context).clearAndGo(Uri(path: '/test/todo'));
+                RouteManager.of(context).clearAndGo(Uri(path: '/login'), params: UserInfo(name: 'your name', age: 18));
               },
-              child: Text('Test replace'),
+              child: Text('Test clearAndGo'),
             ),
             TextButton(
               onPressed: () {
                 // 清除路由栈并跳转（设置多个路由）
-                RouteManager.of(context).clearAndMultipleGo([Uri(path: '/test/todo', queryParameters: {'limit': '12'}), Uri(path: '/test/todo')]);
+                RouteManager.of(context).clearAndMultipleGo([Uri(path: '/test/todo', queryParameters: {'text': '12'}), Uri(path: '/test/todo')]);
               },
               child: Text('clearAndMultipleGo'),
             ),
@@ -107,12 +107,6 @@ class Home extends StatelessWidget {
               },
               child: Text('waitResultGo'),
             ),
-            // TextButton(
-            //   onPressed: () async{
-            //     RouteManager.of(context).insertGo(Uri(path: '/result'));
-            //   },
-            //   child: Text('insertGo'),
-            // ),
           ],
         ),
       ),
@@ -130,12 +124,9 @@ class TestPage extends Page {
     return MaterialPageRoute(
       settings: this,
       builder: (context) {
-        final limit =
-            int.tryParse(uri.queryParameters['limit'] ?? '-1');
         return Test(
           uri: uri,
-          userId: uri.queryParameters['limit'],
-          limit: limit,
+          text: uri.queryParameters['text'],
         );
       },
     );
@@ -144,32 +135,30 @@ class TestPage extends Page {
 
 class Test extends StatelessWidget {
   final Uri uri;
-  final String userId;
-  final int limit;
+  final String text;
 
   const Test({
     Key key,
     @required this.uri,
-    @required this.userId,
-    @required this.limit,
+    @required this.text,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Test Page'),
         automaticallyImplyLeading: true,
       ),
       body: Center(
         child: Column(
           children: [
             Text('test $uri'),
-            Text('userId = $userId'),
-            Text('limit = $limit'),
+            Text('text = $text'),
             TextButton(
               onPressed: () {
                 // 返回
-                RouteManager.of(context).goBack(context);
+                RouteManager.of(context).goBack();
               },
               child: Text('Back'),
             ),
@@ -201,21 +190,64 @@ class Result extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
         title: Text('Result Page'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'This page shows how to return value from a page',
-              textAlign: TextAlign.center,
-            ),
             TextButton(
               // 返回结果
               onPressed: () => RouteManager.of(context).returnResultGo({'uid': 1}),
-              child: Text('Result with true via custom method'),
+              child: Text('只有调用returnResultGo才带有参数, 默认返回不带参数'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UserInfo {
+  final String name;
+  final int age;
+  UserInfo({this.name, this.age});
+}
+class LoginPage extends Page {
+  final UserInfo userInfo;
+  LoginPage(this.userInfo) : super(key: ValueKey('login-page'));
+
+  @override
+  Route createRoute(BuildContext context) {
+    return MaterialPageRoute(
+      settings: this,
+      builder: (context) {
+        return Login(this.userInfo);
+      },
+    );
+  }
+}
+
+class Login extends StatelessWidget {
+  final UserInfo userInfo;
+  const Login(this.userInfo, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login Page'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('${userInfo.name}'),
+            Text('${userInfo.age}'),
+            TextButton(
+              // 返回结果
+              onPressed: () => RouteManager.of(context).replace(Uri(path: '/')),
+              child: Text('登陆'),
             ),
           ],
         ),

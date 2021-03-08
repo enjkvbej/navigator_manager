@@ -1,6 +1,6 @@
 # 简介
 
-Navigator 2.0 for app and web. Easy Use!
+A Flutter router based on navigator 2.0 for app and web, provide many useful methods and send params easily.
 
 ## 快速开始
 

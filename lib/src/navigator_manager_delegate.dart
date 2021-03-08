@@ -211,8 +211,8 @@ class RouteManager extends ChangeNotifier {
  
   /// remove the pages and go root page
   void goRoot() {
-    _pages.removeRange(1, _pages.length - 1);
-    _uris.removeRange(1, _uris.length - 1);
+    _pages.removeRange(1, _pages.length);
+    _uris.removeRange(1, _uris.length);
     notifyListeners();
   }
 }

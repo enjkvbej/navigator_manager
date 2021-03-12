@@ -5,3 +5,7 @@
 ## 0.0.7
 
 ### fix goRoot bug
+
+## 0.0.8
+
+### add hero

@@ -57,6 +57,7 @@ class LRouterDelegate extends RouterDelegate<Uri>
             }
             return false;
           },
+          observers: [HeroController()],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:navigator_manager/navigator_manager.dart';
 import 'package:flutter/material.dart';
 
+
 void main() {
   runApp(MyApp());
 }
@@ -132,17 +133,21 @@ class TestPage extends Page {
     );
   }
 }
-
-class Test extends StatelessWidget {
-  final Uri uri;
-  final String text;
-
-  const Test({
-    Key key,
-    @required this.uri,
-    @required this.text,
+class Test extends StatefulWidget {
+  final uri;
+  final text;
+  Test({
+    this.uri,
+    this.text, 
+    Key key
   }) : super(key: key);
 
+  @override
+  _TestState createState() => _TestState();
+}
+
+
+class _TestState extends State<Test> with RouteAware, RouteObserverMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,8 +158,8 @@ class Test extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text('test $uri'),
-            Text('text = $text'),
+            Text('test ${widget.uri}'),
+            Text('text = ${widget.text}'),
             TextButton(
               onPressed: () {
                 // 返回
@@ -162,10 +167,43 @@ class Test extends StatelessWidget {
               },
               child: Text('Back'),
             ),
+            TextButton(
+              onPressed: () {
+                // 返回
+                RouteManager.of(context).go(
+                    Uri(path: '/test/todo', queryParameters: {'text': '10'}));
+              },
+              child: Text('goText'),
+            ),
           ],
         ),
       ),
     );
+  }
+  /// Called when the top route has been popped off, and the current route
+  /// shows up.
+  @override
+  void didPopNext() {
+    print('didpopnext');
+  }
+
+  /// Called when the current route has been pushed.
+  @override
+  void didPush() {
+    print('didpush');
+  }
+
+  /// Called when the current route has been popped off.
+  @override
+  void didPop() {
+    print('didpop');
+  }
+
+  /// Called when a new route has been pushed, and the current route is no
+  /// longer visible.
+  @override
+  void didPushNext() {
+    print('didpushnext');
   }
 }
 

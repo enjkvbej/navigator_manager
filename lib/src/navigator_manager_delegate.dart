@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:route_observer_mixin/route_observer_mixin.dart';
 
 typedef PageBuilder = Page Function(Uri uri, dynamic params);
 
@@ -39,8 +40,14 @@ class LRouterDelegate extends RouterDelegate<Uri>
   /// @nodoc
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: routeManager,
+    return MultiProvider(
+      providers: [
+        // 1. Wrap MaterialApp with RouteObserverProvider.
+        RouteObserverProvider(
+          create: (context) => GlobalRouteObserver()..navigation.listen(print),
+        ),
+        ChangeNotifierProvider<RouteManager>(create: (_) => routeManager),
+      ],
       child: Consumer<RouteManager>(
         builder: (context, uriRouteManager, _) => Navigator(
           key: navigatorKey,
@@ -57,7 +64,7 @@ class LRouterDelegate extends RouterDelegate<Uri>
             }
             return false;
           },
-          observers: [HeroController()],
+          observers: [HeroController(), RouteObserverProvider.of(context)],
         ),
       ),
     );

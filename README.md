@@ -6,6 +6,8 @@ A Flutter router based on navigator 2.0 for app and web, provide many useful met
 
 在main.dart文件引入路由管理，并进行路由配置
 
+### 1.Api
+
 ```dart
 void main() {
   runApp(MyApp());
@@ -145,4 +147,57 @@ RouteManager.of(context).removeUri(Uri(path: '/test/todo'));
 
 ```dart
 RouteManager.of(context).removeLastUri();
+```
+
+### 2.页面监听
+
+路由栈变化的监听有两种方式：
+
+```dart
+routerDelegate.addListener(() {
+  if (routerDelegate.currentConfiguration == Uri(path: '/')) {
+    /// to do
+  }
+}
+```
+
+```dart
+class APage extends StatefulWidget {
+  const APage({Key key}) : super(key: key);
+
+  @override
+  _APageState createState() => _APageState();
+}
+
+// 3. Add `with RouteAware, RouteObserverMixin` to State and override RouteAware methods.
+class _APageState extends State<APage> with RouteAware, RouteObserverMixin {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('A Page'),
+        ),
+      ),
+    );
+  }
+
+  /// Called when the top route has been popped off, and the current route
+  /// shows up.
+  @override
+  void didPopNext() { }
+
+  /// Called when the current route has been pushed.
+  @override
+  void didPush() { }
+
+  /// Called when the current route has been popped off.
+  @override
+  void didPop() { }
+
+  /// Called when a new route has been pushed, and the current route is no
+  /// longer visible.
+  @override
+  void didPushNext() { }
+}
 ```

@@ -74,7 +74,7 @@ class Home extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // 跳转
-                RouteManager.of(context).go(
+                RouteManager.go(
                     Uri(path: '/test/todo', queryParameters: {'text': '12'}));
               },
               child: Text('Test go'),
@@ -82,28 +82,28 @@ class Home extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // 跳转无匹配路由
-                RouteManager.of(context).go(Uri(path: '/test/haha'));
+                RouteManager.go(Uri(path: '/test/haha'));
               },
               child: Text('Test not found'),
             ),
             TextButton(
               onPressed: () {
                 // 清除路由栈并跳转
-                RouteManager.of(context).clearAndGo(Uri(path: '/login'), params: UserInfo(name: 'your name', age: 18));
+                RouteManager.clearAndGo(Uri(path: '/login'), params: UserInfo(name: 'your name', age: 18));
               },
               child: Text('Test clearAndGo'),
             ),
             TextButton(
               onPressed: () {
                 // 清除路由栈并跳转（设置多个路由）
-                RouteManager.of(context).clearAndMultipleGo([Uri(path: '/test/todo', queryParameters: {'text': '12'}), Uri(path: '/test/todo')]);
+                RouteManager.clearAndMultipleGo([Uri(path: '/test/todo', queryParameters: {'text': '12'}), Uri(path: '/test/todo')]);
               },
               child: Text('clearAndMultipleGo'),
             ),
             TextButton(
               onPressed: () async{
                 // 等待结果跳转 配合returnResultGo使用
-                final result = await RouteManager.of(context).waitResultGo(Uri(path: '/result'));
+                final result = await RouteManager.waitResultGo(Uri(path: '/result'));
                 print(result);
               },
               child: Text('waitResultGo'),
@@ -163,14 +163,14 @@ class _TestState extends State<Test> with RouteAware, RouteObserverMixin {
             TextButton(
               onPressed: () {
                 // 返回
-                RouteManager.of(context).goBack();
+                RouteManager.goBack();
               },
               child: Text('Back'),
             ),
             TextButton(
               onPressed: () {
                 // 返回
-                RouteManager.of(context).go(
+                RouteManager.go(
                     Uri(path: '/test/todo', queryParameters: {'text': '10'}));
               },
               child: Text('goText'),
@@ -236,7 +236,7 @@ class Result extends StatelessWidget {
           children: <Widget>[
             TextButton(
               // 返回结果
-              onPressed: () => RouteManager.of(context).returnResultGo({'uid': 1}),
+              onPressed: () => RouteManager.returnResultGo({'uid': 1}),
               child: Text('只有调用returnResultGo才带有参数, 默认返回不带参数'),
             ),
           ],
@@ -284,7 +284,7 @@ class Login extends StatelessWidget {
             Text('${userInfo.age}'),
             TextButton(
               // 返回结果
-              onPressed: () => RouteManager.of(context).replace(Uri(path: '/')),
+              onPressed: () => RouteManager.replace(Uri(path: '/')),
               child: Text('登陆'),
             ),
           ],

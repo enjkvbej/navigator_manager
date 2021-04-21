@@ -65,8 +65,8 @@ class _MyAppState extends State<MyApp> {
 路由跳转方法, 支持路由传参和自定义数据类型传参
 
 ```dart
-RouteManager.of(context).go(Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
-RouteManager.of(context).go(Uri(path: '/test/todo'), params: your model);
+RouteManager.go(Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
+RouteManager.go(Uri(path: '/test/todo'), params: your model);
 ```
 
 2.`replace(Uri uri, {dynamic params})`
@@ -74,7 +74,7 @@ RouteManager.of(context).go(Uri(path: '/test/todo'), params: your model);
 替换当前路由并跳转
 
 ```dart
-RouteManager.of(context).replace(Uri(path: '/test/todo'));
+RouteManager.replace(Uri(path: '/test/todo'));
 ```
 
 3.`goBack()`
@@ -82,7 +82,7 @@ RouteManager.of(context).replace(Uri(path: '/test/todo'));
 返回上一页, 如若返回传参请用returnResultGo
 
 ```dart
-RouteManager.of(context).goBack();
+RouteManager.goBack();
 ```
 
 4.`clearAndGo(Uri uri, {dynamic params})`
@@ -90,7 +90,7 @@ RouteManager.of(context).goBack();
 清空路由栈并重设首页，如登陆场景
 
 ```dart
-RouteManager.of(context).clearAndGo(Uri(path: '/login'));
+RouteManager.clearAndGo(Uri(path: '/login'));
 ```
 
 5.`multipleGo(List<Uri> uris, {List<dynamic> params})`
@@ -98,7 +98,7 @@ RouteManager.of(context).clearAndGo(Uri(path: '/login'));
 一次设置多个uri并跳转到最后一个路由
 
 ```dart
-RouteManager.of(context).multipleGo([Uri(path: '/test/todo', queryParameters: {'limit': '12'}), Uri(path: '/test/todo')]);
+RouteManager.multipleGo([Uri(path: '/test/todo', queryParameters: {'limit': '12'}), Uri(path: '/test/todo')]);
 ```
 
 6.`clearAndMultipleGo(List<Uri> uris, {List<dynamic> params})`
@@ -106,7 +106,7 @@ RouteManager.of(context).multipleGo([Uri(path: '/test/todo', queryParameters: {'
 清空路由栈并跳转(设置多个uri)
 
 ```dart
-RouteManager.of(context).clearAndMultipleGo(Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
+RouteManager.clearAndMultipleGo(Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
 ```
 
 7.`waitResultGo(Uri uri, {dynamic params})`
@@ -114,7 +114,7 @@ RouteManager.of(context).clearAndMultipleGo(Uri(path: '/test/todo', queryParamet
 跳转等待结果
 
 ```dart
-RouteManager.of(context).waitResultGo(Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
+RouteManager.waitResultGo(Uri(path: '/test/todo', queryParameters: {'limit': '12'}));
 ```
 
 8.`returnResultGo(dynamic value)`
@@ -122,7 +122,7 @@ RouteManager.of(context).waitResultGo(Uri(path: '/test/todo', queryParameters: {
 跳转返回结果
 
 ```dart
-RouteManager.of(context).returnResultGo(your value);
+RouteManager.returnResultGo(your value);
 ```
 
 9.`goRoot()`
@@ -130,7 +130,7 @@ RouteManager.of(context).returnResultGo(your value);
 路由栈只保留首页
 
 ```dart
-RouteManager.of(context).goRoot();
+RouteManager.goRoot();
 ```
 
 10.`removeUri(Uri uri)`
@@ -138,7 +138,7 @@ RouteManager.of(context).goRoot();
 删除指定路由
 
 ```dart
-RouteManager.of(context).removeUri(Uri(path: '/test/todo'));
+RouteManager.removeUri(Uri(path: '/test/todo'));
 ```
 
 11.`removeLastUri()`
@@ -146,7 +146,7 @@ RouteManager.of(context).removeUri(Uri(path: '/test/todo'));
 删除栈顶的路由
 
 ```dart
-RouteManager.of(context).removeLastUri();
+RouteManager.removeLastUri();
 ```
 
 ### 2.页面监听

@@ -7,17 +7,16 @@ import 'package:provider/provider.dart';
 import 'package:route_observer_mixin/route_observer_mixin.dart';
 
 typedef PageBuilder = Page Function(Uri uri, dynamic params);
+RouteManagerProvider routeManager;
 
 /// a [RouterDelegate] based on [Uri]
 class LRouterDelegate extends RouterDelegate<Uri>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<Uri> {
   final navigatorKey = GlobalKey<NavigatorState>();
-  RouteManager routeManager;
 
   LRouterDelegate(
-      {@required Map<String, PageBuilder> routes,
-      PageBuilder pageNotFound}) {
-    routeManager = RouteManager(
+      {@required Map<String, PageBuilder> routes, PageBuilder pageNotFound}) {
+    routeManager = RouteManagerProvider(
       routes: routes,
       pageNotFound: pageNotFound,
     );
@@ -46,9 +45,10 @@ class LRouterDelegate extends RouterDelegate<Uri>
         RouteObserverProvider(
           create: (context) => GlobalRouteObserver()..navigation.listen(print),
         ),
-        ChangeNotifierProvider<RouteManager>(create: (_) => routeManager),
+        ChangeNotifierProvider<RouteManagerProvider>(
+            create: (_) => routeManager),
       ],
-      child: Consumer<RouteManager>(
+      child: Consumer<RouteManagerProvider>(
         builder: (context, uriRouteManager, _) => Navigator(
           key: navigatorKey,
           pages: [
@@ -72,11 +72,8 @@ class LRouterDelegate extends RouterDelegate<Uri>
 }
 
 /// allow you to interact with the List of [pages]
-class RouteManager extends ChangeNotifier {
-  static RouteManager of(BuildContext context) =>
-      Provider.of<RouteManager>(context, listen: false);
-
-  RouteManager({@required this.routes, @required this.pageNotFound});
+class RouteManagerProvider extends ChangeNotifier {
+  RouteManagerProvider({@required this.routes, @required this.pageNotFound});
 
   final Map<String, PageBuilder> routes;
   final PageBuilder pageNotFound;
@@ -130,15 +127,15 @@ class RouteManager extends ChangeNotifier {
       _pages.add(page);
       _uris.add(uri);
     }
-    
+
     notifyListeners();
-    
+
     return SynchronousFuture(null);
   }
 
   /// goto an [Uri]
   Future<void> go(Uri uri, {dynamic params}) => _setNewRoutePath(uri, params);
-  
+
   /// replace
   Future<void> replace(Uri uri, {dynamic params}) {
     _pages.removeLast();
@@ -161,7 +158,7 @@ class RouteManager extends ChangeNotifier {
     _uris.clear();
     return go(uri, params: params);
   }
-  
+
   /// go multiple [Uri] at once
   Future<void> multipleGo(List<Uri> uris, {List<dynamic> params}) async {
     int index = 0;
@@ -216,11 +213,62 @@ class RouteManager extends ChangeNotifier {
       notifyListeners();
     }
   }
- 
+
   /// remove the pages and go root page
   void goRoot() {
     _pages.removeRange(1, _pages.length);
     _uris.removeRange(1, _uris.length);
     notifyListeners();
+  }
+}
+
+class RouteManager {
+  static RouteManagerProvider of(context) {
+    return Provider.of<RouteManagerProvider>(context, listen: false);
+  }
+
+  static Future<void> go(Uri uri, {dynamic params}) {
+    return routeManager.go(uri, params: params);
+  }
+
+  static Future<void> replace(Uri uri, {dynamic params}) {
+    return routeManager.replace(uri, params: params);
+  }
+
+  static void goBack() {
+    return routeManager.goBack();
+  }
+
+  static void goRoot() {
+    return routeManager.goRoot();
+  }
+
+  static Future<void> clearAndGo(Uri uri, {dynamic params}) {
+    return routeManager.clearAndGo(uri, params: params);
+  }
+
+  static Future<void> multipleGo(List<Uri> uris, {List<dynamic> params}) {
+    return routeManager.multipleGo(uris, params: params);
+  }
+
+  static Future<void> clearAndMultipleGo(List<Uri> uris,
+      {List<dynamic> params}) {
+    return routeManager.clearAndMultipleGo(uris, params: params);
+  }
+
+  static void removeUri(Uri uri) {
+    return routeManager.removeUri(uri);
+  }
+
+  static void removeLastUri() {
+    return routeManager.removeLastUri();
+  }
+
+  static Future<dynamic> waitResultGo(Uri uri, {dynamic params}) {
+    return routeManager.waitResultGo(uri, params: params);
+  }
+
+  static void returnResultGo(dynamic value) {
+    return routeManager.returnResultGo(value);
   }
 }

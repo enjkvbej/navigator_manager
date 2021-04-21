@@ -182,9 +182,11 @@ class RouteManagerProvider extends ChangeNotifier {
   /// remove a specific [Uri] and the corresponding [Page]
   void removeUri(Uri uri) {
     final index = _uris.indexOf(uri);
-    _pages.removeAt(index);
-    _uris.removeAt(index);
-    notifyListeners();
+    if (index != -1) {
+      _pages.removeAt(index);
+      _uris.removeAt(index);
+      notifyListeners();
+    }
   }
 
   /// remove the last [Uri] and the corresponding [Page]

@@ -6,7 +6,7 @@ A Flutter router based on navigator 2.0 for app and web, provide many useful met
 
 在main.dart文件引入路由管理，并进行路由配置
 
-### 1.Api
+### 初始化路由管理
 
 ```dart
 void main() {
@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
 
 **value为返回页面的函数, uri是路由参数，params是页面参数，根据参数类型传递**
 
-## 方法
+### 方法
 
 1.`go(Uri uri, {dynamic params})`
 
@@ -149,7 +149,7 @@ RouteManager.removeUri(Uri(path: '/test/todo'));
 RouteManager.removeLastUri();
 ```
 
-### 2.页面监听
+### 页面监听
 
 路由栈变化的监听有两种方式：
 
@@ -201,3 +201,11 @@ class _APageState extends State<APage> with RouteAware, RouteObserverMixin {
   void didPushNext() { }
 }
 ```
+
+## Todo
+
+1. []升级Flutter v2，支持空安全
+
+2. [x]自定义动画路由
+
+3. []嵌套路由

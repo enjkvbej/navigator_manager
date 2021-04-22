@@ -26,11 +26,26 @@ class _MyAppState extends State<MyApp> {
     ),
     // 配置所有路由信息
     routes: {
-      '/': (_, __) => HomePage(),
-      '/test/todo': (uri, _) =>
-          TestPage(uri),
-      '/result': (_, __) => ResultPage(),
-      '/login': (_, params) => LoginPage(params),
+      '/': (_, __) => CreateRoutePage(name: 'home', child: Home()),
+      '/test/todo': (uri, _) => CreateRoutePage(
+        name: 'test', 
+        child: Test(uri: uri, text: uri.queryParameters['text'],), 
+        transition: (animation, child) => ScaleTransition(
+          alignment: Alignment.bottomLeft,
+          scale: Tween(
+            begin: 0.0,
+            end: 1.0,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOut,
+            ),
+          ),
+          child: child,
+        )
+      ),
+      '/result': (_, __) => CreateRoutePage(name: 'result', child: Result()),
+      '/login': (_, params) => CreateRoutePage(name: 'login', child: Login(params)),
     },
   );
 
@@ -40,20 +55,6 @@ class _MyAppState extends State<MyApp> {
       title: 'Uri navigator App',
       routerDelegate: _routerDelegate,
       routeInformationParser: LRouteInformationParser(),
-    );
-  }
-}
-
-class HomePage extends Page {
-  HomePage() : super(key: ValueKey('home-page'));
-
-  @override
-  Route createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (context) {
-        return Home();
-      },
     );
   }
 }
@@ -115,24 +116,6 @@ class Home extends StatelessWidget {
   }
 }
 
-class TestPage extends Page {
-  final Uri uri;
-
-  TestPage(this.uri) : super(key: UniqueKey());
-
-  @override
-  Route createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (context) {
-        return Test(
-          uri: uri,
-          text: uri.queryParameters['text'],
-        );
-      },
-    );
-  }
-}
 class Test extends StatefulWidget {
   final uri;
   final text;
@@ -207,19 +190,6 @@ class _TestState extends State<Test> with RouteAware, RouteObserverMixin {
   }
 }
 
-class ResultPage extends Page {
-  ResultPage() : super(key: ValueKey('result-page'));
-
-  @override
-  Route createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (context) {
-        return Result();
-      },
-    );
-  }
-}
 
 class Result extends StatelessWidget {
   const Result({Key key}) : super(key: key);
@@ -251,20 +221,6 @@ class UserInfo {
   final int age;
   UserInfo({this.name, this.age});
 }
-class LoginPage extends Page {
-  final UserInfo userInfo;
-  LoginPage(this.userInfo) : super(key: ValueKey('login-page'));
-
-  @override
-  Route createRoute(BuildContext context) {
-    return MaterialPageRoute(
-      settings: this,
-      builder: (context) {
-        return Login(this.userInfo);
-      },
-    );
-  }
-}
 
 class Login extends StatelessWidget {
   final UserInfo userInfo;
@@ -284,7 +240,7 @@ class Login extends StatelessWidget {
             Text('${userInfo.age}'),
             TextButton(
               // 返回结果
-              onPressed: () => RouteManager.replace(Uri(path: '/')),
+              onPressed: () => RouteManager.go(Uri(path: '/login'), params: UserInfo(name: 'your name', age: 20)),
               child: Text('登陆'),
             ),
           ],

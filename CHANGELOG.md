@@ -21,3 +21,7 @@
 ## 0.1.1
 
 ### fix `removeUri` bug
+
+## 0.1.2
+
+### add `CreateRoutePage` Container：自动创建Route并支持自定义跳转动画

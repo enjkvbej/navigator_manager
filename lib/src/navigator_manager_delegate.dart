@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:route_observer_mixin/route_observer_mixin.dart';
 
 typedef PageBuilder = Page Function(Uri uri, dynamic params);
-RouteManagerProvider routeManager;
+RouteManagerProvider _routeManagerProvider;
 
 /// a [RouterDelegate] based on [Uri]
 class LRouterDelegate extends RouterDelegate<Uri>
@@ -16,37 +16,35 @@ class LRouterDelegate extends RouterDelegate<Uri>
 
   LRouterDelegate(
       {@required Map<String, PageBuilder> routes, PageBuilder pageNotFound}) {
-    routeManager = RouteManagerProvider(
+    _routeManagerProvider = RouteManagerProvider(
       routes: routes,
       pageNotFound: pageNotFound,
     );
-    routeManager.addListener(notifyListeners);
-
-    for (final uri in [Uri(path: '/')]) {
-      routeManager.go(uri);
+    _routeManagerProvider.addListener(notifyListeners);
+    for (final uri in (routes.keys.isNotEmpty ? [Uri(path: routes.keys.first)] : [Uri(path: '/')])) {
+      _routeManagerProvider.go(uri);
     }
   }
 
   /// get the current route [Uri]
   /// this is show by the browser if your app run in the browser
   Uri get currentConfiguration =>
-      routeManager.uris.isNotEmpty ? routeManager.uris.last : null;
+      _routeManagerProvider.uris.isNotEmpty ? _routeManagerProvider.uris.last : null;
 
   /// add a new [Uri] and the corresponding [Page] on top of the navigator
   @override
-  Future<void> setNewRoutePath(Uri uri) => routeManager.go(uri);
+  Future<void> setNewRoutePath(Uri uri) => _routeManagerProvider.go(uri);
 
   /// @nodoc
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // 1. Wrap MaterialApp with RouteObserverProvider.
         RouteObserverProvider(
           create: (context) => GlobalRouteObserver()..navigation.listen(print),
         ),
         ChangeNotifierProvider<RouteManagerProvider>(
-            create: (_) => routeManager),
+            create: (_) => _routeManagerProvider),
       ],
       child: Consumer<RouteManagerProvider>(
         builder: (context, uriRouteManager, _) => Navigator(
@@ -95,13 +93,7 @@ class RouteManagerProvider extends ChangeNotifier {
     for (var i = 0; i < routes.keys.length; i++) {
       final key = routes.keys.elementAt(i);
       if (key == uri.path) {
-        if (_uris.contains(uri)) {
-          final position = _uris.indexOf(uri);
-          final _urisLengh = _uris.length;
-          for (var start = position; start < _urisLengh - 1; start++) {
-            _pages.removeLast();
-            _uris.removeLast();
-          }
+        if (_uris.contains(uri) && key == routes.keys.first) {
           _findRoute = true;
           break;
         }
@@ -148,7 +140,7 @@ class RouteManagerProvider extends ChangeNotifier {
     if (_pages.length > 1) {
       removeLastUri();
     } else {
-      print('>>>> 已经是首页，不能再回退了');
+      print('navigator_manager>>>>  已经是首页，不能再回退了');
     }
   }
 
@@ -230,47 +222,47 @@ class RouteManager {
   }
 
   static Future<void> go(Uri uri, {dynamic params}) {
-    return routeManager.go(uri, params: params);
+    return _routeManagerProvider.go(uri, params: params);
   }
 
   static Future<void> replace(Uri uri, {dynamic params}) {
-    return routeManager.replace(uri, params: params);
+    return _routeManagerProvider.replace(uri, params: params);
   }
 
   static void goBack() {
-    return routeManager.goBack();
+    return _routeManagerProvider.goBack();
   }
 
   static void goRoot() {
-    return routeManager.goRoot();
+    return _routeManagerProvider.goRoot();
   }
 
   static Future<void> clearAndGo(Uri uri, {dynamic params}) {
-    return routeManager.clearAndGo(uri, params: params);
+    return _routeManagerProvider.clearAndGo(uri, params: params);
   }
 
   static Future<void> multipleGo(List<Uri> uris, {List<dynamic> params}) {
-    return routeManager.multipleGo(uris, params: params);
+    return _routeManagerProvider.multipleGo(uris, params: params);
   }
 
   static Future<void> clearAndMultipleGo(List<Uri> uris,
       {List<dynamic> params}) {
-    return routeManager.clearAndMultipleGo(uris, params: params);
+    return _routeManagerProvider.clearAndMultipleGo(uris, params: params);
   }
 
   static void removeUri(Uri uri) {
-    return routeManager.removeUri(uri);
+    return _routeManagerProvider.removeUri(uri);
   }
 
   static void removeLastUri() {
-    return routeManager.removeLastUri();
+    return _routeManagerProvider.removeLastUri();
   }
 
   static Future<dynamic> waitResultGo(Uri uri, {dynamic params}) {
-    return routeManager.waitResultGo(uri, params: params);
+    return _routeManagerProvider.waitResultGo(uri, params: params);
   }
 
   static void returnResultGo(dynamic value) {
-    return routeManager.returnResultGo(value);
+    return _routeManagerProvider.returnResultGo(value);
   }
 }

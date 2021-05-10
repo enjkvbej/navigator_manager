@@ -33,11 +33,10 @@ class _MyAppState extends State<MyApp> {
     ),
     // 配置所有路由信息（必填）
     routes: {
-      '/': (uri, params) => HomePage(),
-      '/test/todo': (uri, params) =>
-          TestPage(uri),
-      '/result': (uri, params) => ResultPage(),
-      '/login': (uri, params) => LoginPage(),
+      '/': (uri, params) => CreateRoutePage(name: 'main', child: HomePage()),
+      '/test/todo': (uri, params) => CreateRoutePage(name: 'test', child: TestPage(uri)),
+      '/result': (uri, params) => CreateRoutePage(name: 'result', child: ResultPage()),
+      '/login': (uri, params) => CreateRoutePage(name: 'login', child: LoginPage()),
     },
   );
 
@@ -204,7 +203,7 @@ class _APageState extends State<APage> with RouteAware, RouteObserverMixin {
 
 ## Todo
 
-1. -[ ]升级Flutter v2，支持空安全
+1. -[x]升级Flutter v2，支持空安全
 
 2. -[x]自定义动画路由
 

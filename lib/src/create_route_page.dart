@@ -1,24 +1,24 @@
 
 import 'package:flutter/material.dart';
 
-Map<String, int> _navigatorManagerPageMap = {};
-ValueKey createPageKey(String name) {
+Map<String?, int> _navigatorManagerPageMap = {};
+ValueKey createPageKey(String? name) {
   if (_navigatorManagerPageMap[name] != null) {
-    _navigatorManagerPageMap[name]++;
-    name += '-${_navigatorManagerPageMap[name]}';
+    _navigatorManagerPageMap[name] = _navigatorManagerPageMap[name]! + 1;
+    name = name! + '-${_navigatorManagerPageMap[name]}';
   } else {
     _navigatorManagerPageMap[name] = 0;
-    name += '-${_navigatorManagerPageMap[name]}';
+    name = name! + '-${_navigatorManagerPageMap[name]}';
   }
   return ValueKey(name);
 }
 
 class CreateRoutePage extends Page {
-  final String name;
-  final Widget child;
+  final String? name;
+  final Widget? child;
   final bool maintainState;
   final bool fullscreenDialog;
-  final Widget Function(Animation<double> animation, Widget child) transition;
+  final Widget Function(Animation<double> animation, Widget child)? transition;
   CreateRoutePage({this.name, this.child, this.maintainState = true, this.fullscreenDialog = false, this.transition}) : super(key: createPageKey(name));
 
   @override
@@ -28,9 +28,9 @@ class CreateRoutePage extends Page {
         settings: this,
         maintainState: maintainState,
         fullscreenDialog: fullscreenDialog,
-        pageBuilder: (context, animation, secondaryAnimation) => child,
+        pageBuilder: (context, animation, secondaryAnimation) => child!,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return transition(animation, child);
+          return transition!(animation, child);
         },
       );
     } else {
@@ -39,7 +39,7 @@ class CreateRoutePage extends Page {
         maintainState: maintainState,
         fullscreenDialog: fullscreenDialog,
         builder: (context) {
-          return child;
+          return child!;
         },
       );
     }

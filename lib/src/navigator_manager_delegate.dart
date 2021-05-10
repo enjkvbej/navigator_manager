@@ -7,33 +7,32 @@ import 'package:provider/provider.dart';
 import 'package:route_observer_mixin/route_observer_mixin.dart';
 
 typedef PageBuilder = Page Function(Uri uri, dynamic params);
-RouteManagerProvider _routeManagerProvider;
+RouteManagerProvider? _routeManagerProvider;
 
 /// a [RouterDelegate] based on [Uri]
 class LRouterDelegate extends RouterDelegate<Uri>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<Uri> {
   final navigatorKey = GlobalKey<NavigatorState>();
-
   LRouterDelegate(
-      {@required Map<String, PageBuilder> routes, PageBuilder pageNotFound}) {
+      {required Map<String, PageBuilder> routes, PageBuilder? pageNotFound}) {
     _routeManagerProvider = RouteManagerProvider(
       routes: routes,
       pageNotFound: pageNotFound,
     );
-    _routeManagerProvider.addListener(notifyListeners);
+    _routeManagerProvider!.addListener(notifyListeners);
     for (final uri in (routes.keys.isNotEmpty ? [Uri(path: routes.keys.first)] : [Uri(path: '/')])) {
-      _routeManagerProvider.go(uri);
+      _routeManagerProvider!.go(uri);
     }
   }
 
   /// get the current route [Uri]
   /// this is show by the browser if your app run in the browser
-  Uri get currentConfiguration =>
-      _routeManagerProvider.uris.isNotEmpty ? _routeManagerProvider.uris.last : null;
+  Uri? get currentConfiguration =>
+      _routeManagerProvider!.uris.isNotEmpty ? _routeManagerProvider!.uris.last : null;
 
   /// add a new [Uri] and the corresponding [Page] on top of the navigator
   @override
-  Future<void> setNewRoutePath(Uri uri) => _routeManagerProvider.go(uri);
+  Future<void> setNewRoutePath(Uri uri) => _routeManagerProvider!.go(uri);
 
   /// @nodoc
   @override
@@ -43,14 +42,14 @@ class LRouterDelegate extends RouterDelegate<Uri>
         RouteObserverProvider(
           create: (context) => GlobalRouteObserver()..navigation.listen(print),
         ),
-        ChangeNotifierProvider<RouteManagerProvider>(
+        ChangeNotifierProvider<RouteManagerProvider?>(
             create: (_) => _routeManagerProvider),
       ],
-      child: Consumer<RouteManagerProvider>(
+      child: Consumer<RouteManagerProvider?>(
         builder: (context, uriRouteManager, _) => Navigator(
           key: navigatorKey,
           pages: [
-            for (final page in uriRouteManager.pages) page,
+            for (final page in uriRouteManager!.pages) page,
           ],
           onPopPage: (route, result) {
             if (!route.didPop(result)) {
@@ -71,10 +70,10 @@ class LRouterDelegate extends RouterDelegate<Uri>
 
 /// allow you to interact with the List of [pages]
 class RouteManagerProvider extends ChangeNotifier {
-  RouteManagerProvider({@required this.routes, @required this.pageNotFound});
+  RouteManagerProvider({required this.routes, required this.pageNotFound});
 
   final Map<String, PageBuilder> routes;
-  final PageBuilder pageNotFound;
+  final PageBuilder? pageNotFound;
 
   final _pages = <Page>[];
   final _uris = <Uri>[];
@@ -86,7 +85,7 @@ class RouteManagerProvider extends ChangeNotifier {
   /// give you a read only access
   /// to the [List] of [Uri] you have in your navigator
   List<Uri> get uris => UnmodifiableListView(_uris);
-  Completer<dynamic> _boolResultCompleter;
+  Completer<dynamic>? _boolResultCompleter;
 
   Future<void> _setNewRoutePath(Uri uri, dynamic params) {
     bool _findRoute = false;
@@ -97,7 +96,7 @@ class RouteManagerProvider extends ChangeNotifier {
           _findRoute = true;
           break;
         }
-        _pages.add(routes[key](uri, params));
+        _pages.add(routes[key]!(uri, params));
         _uris.add(uri);
         _findRoute = true;
         break;
@@ -152,7 +151,7 @@ class RouteManagerProvider extends ChangeNotifier {
   }
 
   /// go multiple [Uri] at once
-  Future<void> multipleGo(List<Uri> uris, {List<dynamic> params}) async {
+  Future<void> multipleGo(List<Uri> uris, {List<dynamic>? params}) async {
     int index = 0;
     for (final uri in uris) {
       if (params != null && params is List) {
@@ -165,7 +164,7 @@ class RouteManagerProvider extends ChangeNotifier {
   }
 
   /// clear the list of [pages] and then push multiple [Uri] at once
-  Future<void> clearAndMultipleGo(List<Uri> uris, {List<dynamic> params}) {
+  Future<void> clearAndMultipleGo(List<Uri> uris, {List<dynamic>? params}) {
     _pages.clear();
     _uris.clear();
     return multipleGo(uris, params: params);
@@ -194,7 +193,7 @@ class RouteManagerProvider extends ChangeNotifier {
     _boolResultCompleter = Completer<dynamic>();
     await go(uri, params: params);
     notifyListeners();
-    return _boolResultCompleter.future;
+    return _boolResultCompleter!.future;
   }
 
   /// This is custom method to pass returning value
@@ -203,7 +202,7 @@ class RouteManagerProvider extends ChangeNotifier {
     if (_boolResultCompleter != null) {
       _pages.removeLast();
       _uris.removeLast();
-      _boolResultCompleter.complete(value);
+      _boolResultCompleter!.complete(value);
       notifyListeners();
     }
   }
@@ -222,47 +221,47 @@ class RouteManager {
   }
 
   static Future<void> go(Uri uri, {dynamic params}) {
-    return _routeManagerProvider.go(uri, params: params);
+    return _routeManagerProvider!.go(uri, params: params);
   }
 
   static Future<void> replace(Uri uri, {dynamic params}) {
-    return _routeManagerProvider.replace(uri, params: params);
+    return _routeManagerProvider!.replace(uri, params: params);
   }
 
   static void goBack() {
-    return _routeManagerProvider.goBack();
+    return _routeManagerProvider!.goBack();
   }
 
   static void goRoot() {
-    return _routeManagerProvider.goRoot();
+    return _routeManagerProvider!.goRoot();
   }
 
   static Future<void> clearAndGo(Uri uri, {dynamic params}) {
-    return _routeManagerProvider.clearAndGo(uri, params: params);
+    return _routeManagerProvider!.clearAndGo(uri, params: params);
   }
 
-  static Future<void> multipleGo(List<Uri> uris, {List<dynamic> params}) {
-    return _routeManagerProvider.multipleGo(uris, params: params);
+  static Future<void> multipleGo(List<Uri> uris, {List<dynamic>? params}) {
+    return _routeManagerProvider!.multipleGo(uris, params: params);
   }
 
   static Future<void> clearAndMultipleGo(List<Uri> uris,
-      {List<dynamic> params}) {
-    return _routeManagerProvider.clearAndMultipleGo(uris, params: params);
+      {List<dynamic>? params}) {
+    return _routeManagerProvider!.clearAndMultipleGo(uris, params: params);
   }
 
   static void removeUri(Uri uri) {
-    return _routeManagerProvider.removeUri(uri);
+    return _routeManagerProvider!.removeUri(uri);
   }
 
   static void removeLastUri() {
-    return _routeManagerProvider.removeLastUri();
+    return _routeManagerProvider!.removeLastUri();
   }
 
   static Future<dynamic> waitResultGo(Uri uri, {dynamic params}) {
-    return _routeManagerProvider.waitResultGo(uri, params: params);
+    return _routeManagerProvider!.waitResultGo(uri, params: params);
   }
 
   static void returnResultGo(dynamic value) {
-    return _routeManagerProvider.returnResultGo(value);
+    return _routeManagerProvider!.returnResultGo(value);
   }
 }

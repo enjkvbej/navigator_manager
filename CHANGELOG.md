@@ -1,3 +1,11 @@
+## flutter 2.0
+
+## 1.0.0
+
+### support null safety (dart: '>=2.12.0 <3.0.0', flutter: ">=2.0.0")
+
+## flutter 1.0
+
 ## 0.0.1-0.0.5
 
 ### 测试完成
@@ -25,3 +33,5 @@
 ## 0.1.2
 
 ### add `CreateRoutePage` Container：自动创建Route并支持自定义跳转动画
+
+

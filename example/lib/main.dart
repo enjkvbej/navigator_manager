@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class Home extends StatelessWidget {
-  const Home({Key key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +122,7 @@ class Test extends StatefulWidget {
   Test({
     this.uri,
     this.text, 
-    Key key
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -192,7 +192,7 @@ class _TestState extends State<Test> with RouteAware, RouteObserverMixin {
 
 
 class Result extends StatelessWidget {
-  const Result({Key key}) : super(key: key);
+  const Result({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -217,14 +217,14 @@ class Result extends StatelessWidget {
 }
 
 class UserInfo {
-  final String name;
-  final int age;
+  final String? name;
+  final int? age;
   UserInfo({this.name, this.age});
 }
 
 class Login extends StatelessWidget {
   final UserInfo userInfo;
-  const Login(this.userInfo, {Key key}) : super(key: key);
+  const Login(this.userInfo, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

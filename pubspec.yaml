@@ -1,17 +1,17 @@
 name: navigator_manager
 description: A Flutter router based on navigator 2.0 for app and web, provide many useful methods and send params easily.
-version: 0.1.2
+version: 1.0.0
 homepage: https://github.com/enjkvbej/navigator_manager
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^4.3.3
-  route_observer_mixin: ^1.4.2+2
+  provider: ^5.0.0
+  route_observer_mixin: ^1.5.0+1
 
 dev_dependencies:
   flutter_test:

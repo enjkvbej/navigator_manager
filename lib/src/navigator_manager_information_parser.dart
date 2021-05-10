@@ -5,7 +5,7 @@ class LRouteInformationParser extends RouteInformationParser<Uri> {
   /// transform [RouteInformation.location] to [Uri]
   @override
   Future<Uri> parseRouteInformation(RouteInformation routeInformation) async =>
-      Uri.parse(routeInformation.location);
+      Uri.parse(routeInformation.location!);
 
   /// transform [Uri] to [RouteInformation]
   @override

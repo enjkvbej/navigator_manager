@@ -203,8 +203,8 @@ class _APageState extends State<APage> with RouteAware, RouteObserverMixin {
 
 ## Todo
 
-1. -[x]升级Flutter v2，支持空安全
+1. [x] 升级Flutter v2，支持空安全
 
-2. -[x]自定义动画路由
+2. [x] 自定义动画路由
 
-3. -[ ]嵌套路由
+3. [ ] 嵌套路由
